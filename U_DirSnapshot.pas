@@ -1,0 +1,101 @@
+unit U_DirSnapshot;
+
+interface
+uses system.SysUtils, system.IOUtils, System.Generics.Defaults, spring.Collections;
+
+type
+
+  TFileInfo = record
+    RelativePath : string;
+    FullPath     : string;
+    Size         : Int64;
+    ModifiedTime : TDateTime;
+    constructor    Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime);
+  end;
+
+  TFileInfoRPComp = class(TInterfacedObject, IEqualityComparer<TFileInfo>)
+  public
+    function Equals(const left, right: TFileInfo): Boolean;
+    function GetHashCode(const value: TFileInfo): Integer;
+  end;
+
+  TDirectorySnapshot = class
+  private
+    FFiles: IList<TFileInfo>;
+  public
+    property    Files: IList<TFileInfo> read FFiles;
+    function    GetRelativePaths:  IEnumerable<string>;
+    constructor Create(const ARootPath: string);
+  end;
+
+var
+  RelPathComp  : TFileInfoRPComp;
+
+
+implementation
+
+
+constructor TFileInfo.Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime);
+begin
+  RelativePath := ARelativePath;
+  FullPath     := AFullPath;
+  Size         := ASize;
+  ModifiedTime := AModified;
+end;
+
+
+function TFileInfoRPComp.Equals(const left, right: TFileInfo): Boolean;
+begin
+  Result := SameText(left.RelativePath, right.RelativePath);
+  // Use SameText for case-insensitive comparison, or use left.RelativePath = right.RelativePath for case-sensitive
+end;
+
+
+function TFileInfoRPComp.GetHashCode(const value: TFileInfo): Integer;
+begin
+  Result := BobJenkinsHash(PChar(UpperCase(value.RelativePath))^, Length(value.RelativePath) * SizeOf(Char), 0);
+  // Use UpperCase if you used SameText in Equals for consistency
+  // Or use value.RelativePath directly if using case-sensitive comparison
+end;
+
+
+function TDirectorySnapshot.GetRelativePaths: IEnumerable<string>;
+begin
+  Result := TEnumerable.Select< TFileInfo,string >
+                        ( FFiles,
+                          function(const fileInfo: TFileInfo): string
+                          begin
+                            Result := fileInfo.RelativePath;
+                          end
+                        );
+end;
+
+
+constructor TDirectorySnapshot.Create(const ARootPath: string);
+begin
+  FFiles := TCollections.CreateList<TFileInfo>;
+  var fileInfo: TSearchRec;
+  var allFiles := TDirectory.GetFiles(ARootPath, '*.*', TSearchOption.soAllDirectories);
+
+  for var filePath in allFiles do
+  begin
+    var relativePath := ExtractRelativePath(IncludeTrailingPathDelimiter(ARootPath), filePath);
+
+    if FindFirst(filePath, faAnyFile, fileInfo) = 0 then
+    try
+      FFiles.Add(TFileInfo.Create(relativePath, filePath, fileInfo.Size, fileInfo.TimeStamp));
+    finally
+      FindClose(fileInfo);
+    end;
+  end;
+end;
+
+
+
+
+
+initialization
+
+  RelPathComp  := TFileInfoRPComp.Create;
+
+end.
