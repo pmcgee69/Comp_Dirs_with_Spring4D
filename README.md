@@ -1,7 +1,7 @@
 # Comp_Dirs_with_Spring4D
 Compare two directories, using features of Spring4D
 
-Function ideas teach us to map and fold functions over data-structures; to zip lists together; and evaluate lazily.
+Functional ideas teach us to map and fold functions over data-structures; to zip lists together; and evaluate lazily.
 
 When a friend put forward the idea of comparing directory structure versions, I immediately thought of Zip ... but ZipByValue, not ZipByIndex.
 
