@@ -4,6 +4,7 @@ interface
 uses system.SysUtils, system.IOUtils, System.Generics.Defaults, spring.Collections;
 
 type
+  TFileMatch = (both,left,right);
 
   TFileInfo = record
     RelativePath : string;

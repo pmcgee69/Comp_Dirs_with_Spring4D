@@ -19,12 +19,11 @@ begin
     comparison.ForEach(
         procedure(const pair: File2s)
         begin
-          if (pair.Key.RelativePath <> '') and (pair.Value.RelativePath <> '') then
-               writeln('MATCHED: ', pair.Key.RelativePath)
-          else if pair.Key.RelativePath <> '' then
-               writeln('REMOVED: ', pair.Key.RelativePath)
-          else
-               writeln('ADDED: ', pair.Value.RelativePath);
+          case pair.match of
+               both:  writeln('MATCHED: ', pair.diff.key.RelativePath);
+               left:  writeln('REMOVED: ', pair.diff.key.RelativePath);
+               right: writeln('ADDED  : ', pair.diff.value.RelativePath);
+          end;
         end);
   finally
         snapshot1.Free;
