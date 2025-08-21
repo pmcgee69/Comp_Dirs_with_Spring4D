@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{3D4ACE1F-95AE-462C-BABB-7225F80C37B5}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Proj_Comp_Dirs.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Proj_Comp_Dirs2.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Proj_Comp_Dirs">
+        <MSBuild Projects="Proj_Comp_Dirs.dproj"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs:Clean">
+        <MSBuild Projects="Proj_Comp_Dirs.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs:Make">
+        <MSBuild Projects="Proj_Comp_Dirs.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs2">
+        <MSBuild Projects="Proj_Comp_Dirs2.dproj"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs2:Clean">
+        <MSBuild Projects="Proj_Comp_Dirs2.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs2:Make">
+        <MSBuild Projects="Proj_Comp_Dirs2.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Proj_Comp_Dirs;Proj_Comp_Dirs2"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Proj_Comp_Dirs:Clean;Proj_Comp_Dirs2:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Proj_Comp_Dirs:Make;Proj_Comp_Dirs2:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
