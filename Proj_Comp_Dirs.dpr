@@ -16,15 +16,15 @@ begin
   try
     var comparison := ZipDirSnapshots(snapshot1, snapshot2);
 
-    comparison.ForEach(
-        procedure(const pair: File2s)
-        begin
-          case pair.match of
-               both:  writeln('MATCHED: ', pair.diff.key.RelativePath);
-               left:  writeln('REMOVED: ', pair.diff.key.RelativePath);
-               right: writeln('ADDED  : ', pair.diff.value.RelativePath);
-          end;
-        end);
+        comparison.ForEach(
+            procedure(const pair: File2s)
+            begin
+              case pair.match of
+                   both:  writeln('MATCHED: ', pair.diff.key.RelativePath);
+                   left:  writeln('REMOVED: ', pair.diff.key.RelativePath);
+                   right: writeln('ADDED  : ', pair.diff.value.RelativePath);
+              end;
+            end);
   finally
         snapshot1.Free;
         snapshot2.Free;

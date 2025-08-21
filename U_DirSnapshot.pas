@@ -4,7 +4,6 @@ interface
 uses system.SysUtils, system.IOUtils, System.Generics.Defaults, spring.Collections;
 
 type
-  TFileMatch = (both,left,right);
 
   TFileInfo = record
     RelativePath : string;
@@ -14,11 +13,21 @@ type
     constructor    Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime);
   end;
 
-  TFileInfoRPComp = class(TInterfacedObject, IEqualityComparer<TFileInfo>)
+  TFileInfoRelPathComp = class(TInterfacedObject, IEqualityComparer<TFileInfo>)
   public
     function Equals(const left, right: TFileInfo): Boolean;
     function GetHashCode(const value: TFileInfo): Integer;
   end;
+
+
+  TFileMatch = (both,left,right);
+
+  File2s = record
+    match : TFileMatch;
+    diff  : TPair<TFileInfo, TFileInfo>;
+    constructor create(const f:TFileInfo; m:TFileMatch);
+  end;
+
 
   TDirectorySnapshot = class
   private
@@ -30,7 +39,7 @@ type
   end;
 
 var
-  RelPathComp  : TFileInfoRPComp;
+  RelPathComp  : TFileInfoRelPathComp;
 
 
 implementation
@@ -45,14 +54,14 @@ begin
 end;
 
 
-function TFileInfoRPComp.Equals(const left, right: TFileInfo): Boolean;
+function TFileInfoRelPathComp.Equals(const left, right: TFileInfo): Boolean;
 begin
   Result := SameText(left.RelativePath, right.RelativePath);
   // Use SameText for case-insensitive comparison, or use left.RelativePath = right.RelativePath for case-sensitive
 end;
 
 
-function TFileInfoRPComp.GetHashCode(const value: TFileInfo): Integer;
+function TFileInfoRelPathComp.GetHashCode(const value: TFileInfo): Integer;
 begin
   Result := BobJenkinsHash(PChar(UpperCase(value.RelativePath))^, Length(value.RelativePath) * SizeOf(Char), 0);
   // Use UpperCase if you used SameText in Equals for consistency
@@ -92,11 +101,21 @@ begin
 end;
 
 
+constructor File2s.create(const f:TFileInfo; m:TFileMatch);
+begin
+  var nil_case := Default(TFileInfo); // Empty record
+      match    := m;
+      case m of
+         left  : diff := TPair<TFileInfo, TFileInfo>.Create(f,nil_case);
+         right : diff := TPair<TFileInfo, TFileInfo>.Create(nil_case,f);
+         both  : diff := TPair<TFileInfo, TFileInfo>.Create(f,f);
+      end;
+end;
 
 
 
 initialization
 
-  RelPathComp  := TFileInfoRPComp.Create;
+  RelPathComp  := TFileInfoRelPathComp.Create;
 
 end.

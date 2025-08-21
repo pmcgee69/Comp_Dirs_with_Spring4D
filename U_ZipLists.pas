@@ -3,13 +3,6 @@ unit U_ZipLists;
 interface
 uses spring.Collections, U_DirSnapshot;
 
-type
-   File2s = record
-      match : TFileMatch;
-      diff  : TPair<TFileInfo, TFileInfo>;
-      constructor create(const f:TFileInfo; m:TFileMatch);
-   end;
-
 function ZipDirSnapshots(const snap1,snap2: TDirectorySnapshot) : IEnumerable<File2s>;
 
 implementation
@@ -49,19 +42,6 @@ begin
                         end
                 )
                 );
-end;
-
-
-constructor File2s.create(const f:TFileInfo; m:TFileMatch);
-begin
-  var nil_case := Default(TFileInfo); // Empty record
-      match    := m;
-      case m of
-         left  : diff := TPair<TFileInfo, TFileInfo>.Create(f,nil_case);
-         right : diff := TPair<TFileInfo, TFileInfo>.Create(nil_case,f);
-         both  : diff := TPair<TFileInfo, TFileInfo>.Create(f,f);
-      end;
-
 end;
 
 
