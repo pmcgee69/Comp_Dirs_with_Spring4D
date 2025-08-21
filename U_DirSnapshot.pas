@@ -54,6 +54,18 @@ begin
 end;
 
 
+constructor File2s.create(const f:TFileInfo; m:TFileMatch);
+begin
+  var nil_case := Default(TFileInfo); // Empty record
+      match    := m;
+      case m of
+         left  : diff := TPair<TFileInfo, TFileInfo>.Create(f,nil_case);
+         right : diff := TPair<TFileInfo, TFileInfo>.Create(nil_case,f);
+         both  : diff := TPair<TFileInfo, TFileInfo>.Create(f,f);
+      end;
+end;
+
+
 function TFileInfoRelPathComp.Equals(const left, right: TFileInfo): Boolean;
 begin
   Result := SameText(left.RelativePath, right.RelativePath);
@@ -100,17 +112,6 @@ begin
   end;
 end;
 
-
-constructor File2s.create(const f:TFileInfo; m:TFileMatch);
-begin
-  var nil_case := Default(TFileInfo); // Empty record
-      match    := m;
-      case m of
-         left  : diff := TPair<TFileInfo, TFileInfo>.Create(f,nil_case);
-         right : diff := TPair<TFileInfo, TFileInfo>.Create(nil_case,f);
-         both  : diff := TPair<TFileInfo, TFileInfo>.Create(f,f);
-      end;
-end;
 
 
 
