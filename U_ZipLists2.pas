@@ -21,7 +21,7 @@ begin
                         list_both,
                         function(const f: TFileInfo): File2s
                         begin
-                           result := File2s.Create(f,both);
+                           result := File2s.Create(f,both,snap2.Files);
                         end
                 )
                 .Concat (

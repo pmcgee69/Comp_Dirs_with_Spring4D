@@ -2,6 +2,7 @@
 program Proj_Comp_Dirs2;
 
 uses
+  system.StrUtils,
   spring,
   spring.Collections,
   U_DirSnapshot2 in 'U_DirSnapshot2.pas',
@@ -19,7 +20,8 @@ begin
             procedure(const pair: File2s)
             begin
               case pair.match of
-                   both:  writeln('MATCHED: ', pair.diff.key.RelativePath);
+                   both:  writeln(ifthen(pair.diff.key.Size = pair.diff.value.Size,'   ','x  '),
+                                  'MATCHED: ', pair.diff.key.RelativePath);
                    left:  writeln('REMOVED: ', pair.diff.key.RelativePath);
                    right: writeln('ADDED  : ', pair.diff.value.RelativePath);
               end;

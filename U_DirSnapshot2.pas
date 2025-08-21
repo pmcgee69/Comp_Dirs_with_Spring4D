@@ -55,13 +55,21 @@ end;
 
 
 constructor File2s.create(const f:TFileInfo; m:TFileMatch; snap2: IList<TFileInfo> = nil);
+var
+      f2 : TFileInfo;
 begin
   var nil_case := Default(TFileInfo); // Empty record
       match    := m;
       case m of
          left  : diff := TPair<TFileInfo, TFileInfo>.Create(f,nil_case);
          right : diff := TPair<TFileInfo, TFileInfo>.Create(nil_case,f);
-         both  : diff := TPair<TFileInfo, TFileInfo>.Create(f,f);
+         both  : begin
+                 f2   := snap2.FirstOrDefault( function(const fp: TFileInfo) : boolean
+                                               begin
+                                                 exit(fp.RelativePath=f.RelativePath);
+                                               end );
+                 diff := TPair<TFileInfo, TFileInfo>.Create(f,f2);
+                 end;
       end;
 end;
 
