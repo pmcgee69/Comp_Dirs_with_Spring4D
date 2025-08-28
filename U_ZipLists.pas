@@ -16,6 +16,8 @@ begin
   var list_left  := snap1.Files.Exclude  (list_both,   RelPathComp);
   var list_right := snap2.Files.Exclude  (list_both,   RelPathComp);
 
+  writeln( 'Both: ',list_both.Count,'  Left: ',list_left.Count,' Right: ',list_right.Count);
+  readln;
 
   Result :=     TEnumerable.Select<TFileInfo,File2s>(
                         list_both,

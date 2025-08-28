@@ -99,6 +99,7 @@ begin
   var fileInfo: TSearchRec;
   var allFiles := TDirectory.GetFiles(ARootPath, '*.*', TSearchOption.soAllDirectories);
 
+  writeln('1*');
   for var filePath in allFiles do
   begin
     var relativePath := ExtractRelativePath(IncludeTrailingPathDelimiter(ARootPath), filePath);

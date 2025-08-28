@@ -10,10 +10,11 @@ uses
 
 procedure CompareDirectories;
 begin
-  var   snapshot1 := TDirectorySnapshot.Create('d:\Obsidian Vault');
-  var   snapshot2 := TDirectorySnapshot.Create('d:\Obsidian Vault0');
+  var   snapshot1 := TDirectorySnapshot.Create('c:\users', left); //'d:\Obsidian Vault');
+  var   snapshot2 := TDirectorySnapshot.Create('c:\users',right); // 'd:\Obsidian Vault0');
 
   try
+    writeln('2*');
     var comparison := ZipDirSnapshots(snapshot1, snapshot2);
 
         comparison.ForEach(
