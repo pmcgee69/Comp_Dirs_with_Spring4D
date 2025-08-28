@@ -5,12 +5,15 @@ uses system.SysUtils, system.IOUtils, System.Generics.Defaults, spring.Collectio
 
 type
 
+  TFileMatch = (both,left,right);
+
   TFileInfo = record
     RelativePath : string;
     FullPath     : string;
     Size         : Int64;
     ModifiedTime : TDateTime;
-    constructor    Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime);
+    Side         : TFileMatch;
+    constructor    Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime; ASide: TFileMatch);
   end;
 
   TFileInfoRelPathComp = class(TInterfacedObject, IEqualityComparer<TFileInfo>)
@@ -19,8 +22,6 @@ type
     function GetHashCode(const value: TFileInfo): Integer;
   end;
 
-
-  TFileMatch = (both,left,right);
 
   File2s = record
     match : TFileMatch;
@@ -35,7 +36,7 @@ type
   public
     property    Files: IList<TFileInfo> read FFiles;
     function    GetRelativePaths:  IEnumerable<string>;
-    constructor Create(const ARootPath: string);
+    constructor Create(const ARootPath: string; Side: TFileMatch);
   end;
 
 var
@@ -45,12 +46,13 @@ var
 implementation
 
 
-constructor TFileInfo.Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime);
+constructor TFileInfo.Create(const ARelativePath, AFullPath: string; ASize: Int64; AModified: TDateTime; ASide: TFileMatch);
 begin
   RelativePath := ARelativePath;
   FullPath     := AFullPath;
   Size         := ASize;
   ModifiedTime := AModified;
+  Side         := ASide;
 end;
 
 
@@ -101,19 +103,20 @@ begin
 end;
 
 
-constructor TDirectorySnapshot.Create(const ARootPath: string);
+constructor TDirectorySnapshot.Create(const ARootPath: string; Side: TFileMatch);
 begin
   FFiles := TCollections.CreateList<TFileInfo>;
   var fileInfo: TSearchRec;
   var allFiles := TDirectory.GetFiles(ARootPath, '*.*', TSearchOption.soAllDirectories);
 
+  writeln('1*');
   for var filePath in allFiles do
   begin
     var relativePath := ExtractRelativePath(IncludeTrailingPathDelimiter(ARootPath), filePath);
 
     if FindFirst(filePath, faAnyFile, fileInfo) = 0 then
     try
-      FFiles.Add(TFileInfo.Create(relativePath, filePath, fileInfo.Size, fileInfo.TimeStamp));
+      FFiles.Add(TFileInfo.Create(relativePath, filePath, fileInfo.Size, fileInfo.TimeStamp, Side));
     finally
       FindClose(fileInfo);
     end;
