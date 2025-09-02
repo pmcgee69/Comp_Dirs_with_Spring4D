@@ -15,6 +15,9 @@
         <Projects Include="Proj_Comp_Dirs4.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Proj_Comp_Dirs5.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="Proj_Comp_Dirs4:Make">
         <MSBuild Projects="Proj_Comp_Dirs4.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Proj_Comp_Dirs5">
+        <MSBuild Projects="Proj_Comp_Dirs5.dproj"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs5:Clean">
+        <MSBuild Projects="Proj_Comp_Dirs5.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Proj_Comp_Dirs5:Make">
+        <MSBuild Projects="Proj_Comp_Dirs5.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Proj_Comp_Dirs;Proj_Comp_Dirs2;Proj_Comp_Dirs3;Proj_Comp_Dirs4"/>
+        <CallTarget Targets="Proj_Comp_Dirs;Proj_Comp_Dirs2;Proj_Comp_Dirs3;Proj_Comp_Dirs4;Proj_Comp_Dirs5"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Proj_Comp_Dirs:Clean;Proj_Comp_Dirs2:Clean;Proj_Comp_Dirs3:Clean;Proj_Comp_Dirs4:Clean"/>
+        <CallTarget Targets="Proj_Comp_Dirs:Clean;Proj_Comp_Dirs2:Clean;Proj_Comp_Dirs3:Clean;Proj_Comp_Dirs4:Clean;Proj_Comp_Dirs5:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Proj_Comp_Dirs:Make;Proj_Comp_Dirs2:Make;Proj_Comp_Dirs3:Make;Proj_Comp_Dirs4:Make"/>
+        <CallTarget Targets="Proj_Comp_Dirs:Make;Proj_Comp_Dirs2:Make;Proj_Comp_Dirs3:Make;Proj_Comp_Dirs4:Make;Proj_Comp_Dirs5:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
